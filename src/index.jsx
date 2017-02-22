@@ -5,10 +5,10 @@ import MainLayout from './common/MainLayout.jsx'
 import Home from './common/Home.jsx'
 import Session from './session/Session.jsx'
 
-import { Router, Route, IndexRoute, hashHistory } from 'react-router'
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 
 render((
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path="/" component={MainLayout}>
       <IndexRoute component={Home} />
       <Route path="/new" component={Session} />

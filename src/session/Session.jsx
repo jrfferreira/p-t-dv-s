@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import {render} from 'react-dom'
 import {map, size, get} from 'lodash'
 import Peer from 'peerjs'
-import { Link, hashHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 import {config} from '../config'
 
@@ -149,7 +149,7 @@ export default class Session extends React.Component {
     if(this.state.hostId) {
         this.connectToPeer(this.state.hostId)
     } else {
-        hashHistory.push('/session/'+pid)
+        browserHistory.push('/session/'+pid)
     }
 
     this.setState({
@@ -233,7 +233,7 @@ export default class Session extends React.Component {
     let hasError = this.state.error ? this.state.error : false
 
     if(hasError.type === 'peer-unavailable') {
-        hashHistory.push('/?error='+hasError.message)
+        browserHistory.push('/?error='+hasError.message)
     }
 
     return <div>
