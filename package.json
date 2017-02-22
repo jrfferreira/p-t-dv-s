@@ -1,0 +1,35 @@
+{
+  "name": "survival-progression-companion-app",
+  "version": "1.0.0",
+  "description": "The Division Companion App to help Survival Mode Progression",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/webpack -d",
+    "dev": "./node_modules/.bin/webpack -d --watch",
+    "start": "cd public; python -m SimpleHTTPServer 3030"
+  },
+  "author": "jrfferreira",
+  "license": "MIT",
+  "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "lodash": "^4.17.4",
+    "node-sass": "^4.5.0",
+    "peerjs": "^0.3.14",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-foundation": "^0.7.0",
+    "react-router": "^3.0.2",
+    "style-loader": "~0.13.1",
+    "webpack": "^2.2.1"
+  },
+  "devDependencies": {
+    "css-loader": "^0.26.1",
+    "sass-loader": "^6.0.2",
+    "style-loader": "^0.13.1"
+  }
+}

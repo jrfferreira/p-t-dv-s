@@ -1,0 +1,13 @@
+@import 'reset';
+
+$baseColor: #ff7f00;
+
+
+.app-container {
+  background: white;
+
+  button {
+    color: black;
+    background: $baseColor;
+  }
+}
