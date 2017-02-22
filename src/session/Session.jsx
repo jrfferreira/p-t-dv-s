@@ -46,9 +46,6 @@ class Build extends React.Component {
 }
 
 export default class Session extends React.Component {
-
-  peer = new Peer(Object.assign({}, config.peerjs))
-
   state: {
     peers: PropTypes.object,
     connectedPeers: PropTypes.object,
@@ -68,10 +65,22 @@ export default class Session extends React.Component {
       pid: null
     }
 
-    this.peer.on('open', this.onOpen)
-    this.peer.on('connection', this.onReceivePeerConnection)
-    this.peer.on('error', this.onError())
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', config.xirsysUrl)
+    xhr.onload = () => {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText)
+          console.log(xhr.responseText, data)
 
+          this.peer = new Peer(Object.assign({}, config.peerjs, {customConfig: data.d}))
+
+          this.peer.on('open', this.onOpen)
+          this.peer.on('connection', this.onReceivePeerConnection)
+          this.peer.on('error', this.onError())
+
+        }
+    };
+    xhr.send()
   }
 
   // Connection handler
@@ -246,6 +255,7 @@ export default class Session extends React.Component {
                 :
                 null
               }
+              {this.state.pid ? 
                 <div>
                   {isHost? <div>You are the host <pre>{this.state.pid}</pre></div> : null}
 
@@ -261,6 +271,10 @@ export default class Session extends React.Component {
                   })}
                 </ul>
               </div>
+              :
+              <div>loading...</div>
+
+              }
           </div>
   }
 }
