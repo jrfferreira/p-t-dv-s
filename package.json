@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/webpack -d",
     "dev": "./node_modules/.bin/webpack -d --watch",
-    "start": "cd public; python -m SimpleHTTPServer 3030"
+    "start": "http-server ./public"
   },
   "author": "jrfferreira",
   "license": "MIT",
