@@ -70,9 +70,9 @@ export default class Session extends React.Component {
     xhr.onload = () => {
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText)
-          console.log(xhr.responseText, data)
+          console.log(data.d)
 
-          this.peer = new Peer(Object.assign({}, config.peerjs, {customConfig: data.d}))
+          this.peer = new Peer(Object.assign({}, config.peerjs, {config: data.d}))
 
           this.peer.on('open', this.onOpen)
           this.peer.on('connection', this.onReceivePeerConnection)
