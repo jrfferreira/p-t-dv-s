@@ -6,43 +6,13 @@ import { Link, browserHistory } from 'react-router'
 
 import {config} from '../config'
 
+import {Build} from './Build.jsx'
 
+const maxConnections = 4
 const connectionStatus = {
   loading: 'LOADING',
   opened: 'OPENED',
   closed: 'CLOSED'
-}
-
-const types = [null, 'green', 'blue', 'purple', 'gold']
-
-const defaultPeerState = {
-  w1: 0, // weapon 1
-  w2: 0, // weapon 2
-  w3: 1, // weapon 3
-  c: 1, // chest
-  b: 1, // backpack
-  m: 1, // mask
-  g: 1, // gloves
-  k: 1, // kneepad
-  h: 1, // hoster
-  nm: 0,
-  dz: 0,
-  xt: 0
-}
-
-class Build extends React.Component {
-  
-  props: {
-    peer: PropTypes.string.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    console.log(this.props)
-    return <div>{this.props.nickname}: {this.props.status} </div>
-  }
 }
 
 export default class Session extends React.Component {
@@ -70,7 +40,6 @@ export default class Session extends React.Component {
     xhr.onload = () => {
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText)
-          console.log(data.d)
 
           this.peer = new Peer(Object.assign({}, config.peerjs, {config: data.d}))
 
@@ -106,7 +75,7 @@ export default class Session extends React.Component {
         var c = this.peer.connect(requestedPeer, {
           label: 'default',
           serialization: 'none',
-          metadata: {nickname: this.state.nickname}
+          metadata: {nickname: this.state.nickname }
         })
 
         if(c) {
@@ -130,10 +99,11 @@ export default class Session extends React.Component {
 
       connection.on('data', this.onReceiveData(connection.peer))
       connection.on('open', () => {
-        this.updatePeerState(connection.peer, {nickname: this.state.nickname })
+        this.updatePeerState(connection.peer, connection.metadata)
 
         this.sendUpdate({
           nickname: this.state.nickname,
+          build: this.state.peers[this.state.pid].build,
           connectedPeers: this.state.connectedPeers
         })
       })
@@ -143,7 +113,7 @@ export default class Session extends React.Component {
   }
 
   onError = (peerId) => (error) => {
-    console.log(peerId, error)
+    console.log('Error:', peerId, error)
     if (peerId) {
       this.onClose(peerId)()
     }
@@ -163,7 +133,13 @@ export default class Session extends React.Component {
 
     this.setState({
       pid,
-      hostId
+      hostId,
+      connectedPeers: Object.assign({}, this.state.connectedPeers, {
+        [pid]: connectionStatus.opened
+      }),
+      peers: Object.assign({}, this.state.peers, {
+        [pid]: Object.assign({}, this.state.peers[pid], {nickname:this.state.nickname, build: null})
+      })
     })
   }
 
@@ -219,25 +195,43 @@ export default class Session extends React.Component {
   onChangeNickname = (e) => {
     let nickname = e.target.value
     this.setState({
-      nickname
+      nickname,
+      peers: Object.assign({}, this.state.peers, {
+        [this.state.pid]: Object.assign({}, this.state.peers[this.state.pid], {nickname})
+      })
     })
     this.sendUpdate({nickname})
   }
 
-  updatePeerState = (peer, {nickname, build}) => {
-    
+  updatePeerState = (peer, {nickname, build={}}) => {
     this.setState({
       connectedPeers: Object.assign({}, this.state.connectedPeers, {
         [peer]: connectionStatus.opened
       }),
       peers: Object.assign({}, this.state.peers, {
-        [peer]: Object.assign(defaultPeerState, this.state.peers[peer], {nickname, build})
+        [peer]: Object.assign({}, this.state.peers[peer], {nickname, build})
       })
     })
   }
 
+  onUpdateBuild = (peerId) => (build) => {
+    let peer = Object.assign({}, this.state.peers[peer], {
+          nickname: this.state.nickname,
+          build:  Object.assign({}, (this.state.peers[peer]||{}).build, build)
+        })
+    
+    console.log('your build',this.state.peers, peerId, peer)
+
+    this.setState({
+      peers: Object.assign({}, this.state.peers, {
+        [peerId]: peer
+      })
+    })
+
+    this.sendUpdate(peer)
+  }
+
   render () {
-    console.log(this.state.hostId)
     let isHost = this.state.hostId === this.state.pid
     let hasError = this.state.error ? this.state.error : false
 
@@ -257,23 +251,22 @@ export default class Session extends React.Component {
               }
               {this.state.pid ? 
                 <div>
-                  {isHost? <div>You are the host <pre>{this.state.pid}</pre></div> : null}
+                <div>Your Squad: {size(this.state.connectedPeers)}/{maxConnections} players</div>
+                {map(this.state.connectedPeers, (nickname, peer) => {
+                  return <Build key={peer} status={this.state.connectedPeers[peer]} readOnly={true} {...this.state.peers[peer]}/>
+                })}
 
-                  <label>
-                    Your nickname:
-                    <input type="text" value={this.state.nickname} onChange={this.onChangeNickname} />
-                  </label>
+                {isHost? <div>You are the host <pre>{this.state.pid}</pre></div> : null}
 
+                <label className="nickname">
+                  <span className="nickname__label">Your name:</span>
+                  <input className="nickname__input" type="text" value={this.state.nickname} onChange={this.onChangeNickname} />
+                </label>
 
-                <ul>
-                  {map(this.state.connectedPeers, (nickname, peer) => {
-                    return <li key={peer}><Build status={this.state.connectedPeers[peer]} {...this.state.peers[peer]}/></li>
-                  })}
-                </ul>
+                <Build status={this.state.connectedPeers[this.state.pid]} readOnly={false} onUpdateBuild={this.onUpdateBuild(this.state.pid)}  {...this.state.peers[this.state.pid]}/>
               </div>
               :
               <div>loading...</div>
-
               }
           </div>
   }

@@ -1,13 +1,187 @@
 @import 'reset';
+@import 'mixins';
 
+$greyBackground: #f0f0f0;
 $baseColor: #ff7f00;
+
+$colorEmpty: #ddd;
+$colorStandard: #73C32C;
+$colorSpecialized: #5080FF;
+$colorSuperior: #B14298;
+$colorHigh-end: #FFAF10;
+
+
+@include keyframes(blink) {
+  0% { background: $baseColor; }
+  60% { background: lighten($baseColor, 30%); }
+  90% { background: $baseColor; }
+}
+
+
+
+html,
+body,
+.app-container {
+  font-size: 16px;
+  line-height: 14px;
+}
 
 
 .app-container {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
   background: white;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &__header {
+    text-align: center;
+    display: block;
+    position: fixed;
+    padding: 1rem 0;
+    font-size: 1rem;
+    line-height: 1rem;
+    top: 0;
+    width: 100%;
+    background: $greyBackground;
+  }
+
+  &__footer {
+    font-size: .6rem;
+    text-align: center;
+    display: block;
+    position: fixed;
+    padding: .8rem 0;
+    bottom: 0;
+    width: 100%;
+    background: $greyBackground;
+  }
+
+  &__body {
+    padding: 10px;
+  }
+
+  .nickname {
+    display: block;
+    padding-bottom: 1rem;
+
+    &__input {
+      color: black;
+      background: #f0f0f0;
+      border-width: 0 0 2px 0;
+      padding: .4rem;
+      margin: 0 .6rem;
+      border-color: $baseColor;
+      border-style: solid;
+    }
+  }
 
   button {
     color: black;
     background: $baseColor;
+  }
+
+
+  .build {
+    width: 100%;
+    display: block;
+    border: 1px solid $greyBackground;
+    
+    &--expectator {
+      width: 50%;
+      display: inline-block;
+
+      & + .build--expectator {
+      //  margin-left: 2%;
+      }
+    }
+
+    &__header {
+      width: 100%;
+      display: block;
+      background: $greyBackground;
+      font-size: 1rem;
+      padding: .5rem;
+    }
+
+    &__column {
+      width: 32%;
+      display: inline-block;
+      padding: 1rem;
+
+     & + .build__column {
+        margin-left: 2%;
+      }
+    }
+    
+    &__state {
+      width: 100%;
+
+      .build__action {
+        text-align: center;
+        display: inline-block;
+        font-size: .6rem;
+        background-color: $greyBackground;
+        width: 33%;
+
+        &__dz,
+        &__xt {
+          &--active {
+            background: $baseColor;
+          }
+        }
+        &__nm {
+          &--active {
+            background: $baseColor;
+            @include animation('blink 1s infinite');
+            // animation: blink 1s step-start 0s infinite;
+            // -webkit-animation: blink 1s step-start 0s infinite;
+          }
+        }
+      }
+    }
+    
+
+    
+    &__piece {
+      text-align: center;
+      line-height: 3rem;
+      height: 3rem;
+
+      & + .build__piece {
+        margin-top: 1rem;
+      }
+
+      &__w1,
+      &__w2,
+      &__w3,
+      &__c,
+      &__m,
+      &__k,
+      &__b,
+      &__g,
+      &__h {
+        background-color: $greyBackground;
+        display: block;
+
+        &--empty {
+          background-color: $colorEmpty;
+        }
+        &--standard {
+          background-color: $colorStandard;
+        }
+        &--specialized {
+          background-color: $colorSpecialized;
+        }
+        &--superior {
+          background-color: $colorSuperior;
+        }
+        &--high-end {
+          background-color: $colorHigh-end;
+        }
+      }
+    }
   }
 }
