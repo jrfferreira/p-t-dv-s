@@ -3,6 +3,7 @@
 
 $greyBackground: #f0f0f0;
 $baseColor: #ff7f00;
+$highlightColor: #30D187;
 
 $colorEmpty: #ddd;
 $colorStandard: #73C32C;
@@ -17,7 +18,15 @@ $colorHigh-end: #FFAF10;
   90% { background: $baseColor; }
 }
 
-
+body {
+  background: #000 url('/bundle/img/bg.jpg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  font-family: Borda-Regular, Borda-Demi-Bold, Arial !important;
+  color: white;
+}
 
 html,
 body,
@@ -29,8 +38,6 @@ body,
 
 .app-container {
   padding-top: 3rem;
-  padding-bottom: 4rem;
-  background: white;
 
   * {
     box-sizing: border-box;
@@ -52,11 +59,8 @@ body,
     font-size: .6rem;
     text-align: center;
     display: block;
-    position: fixed;
     padding: .8rem 0;
-    bottom: 0;
     width: 100%;
-    background: $greyBackground;
   }
 
   &__body {
@@ -87,7 +91,8 @@ body,
   .build {
     width: 100%;
     display: block;
-    border: 1px solid $greyBackground;
+    background: rgba(100,100,100,.2);
+    padding: .5rem;
     
     &--expectator {
       width: 50%;
@@ -99,6 +104,7 @@ body,
     }
 
     &__header {
+      color: black;
       width: 100%;
       display: block;
       background: $greyBackground;
@@ -123,13 +129,21 @@ body,
         text-align: center;
         display: inline-block;
         font-size: .6rem;
-        background-color: $greyBackground;
+        background-color: black;
         width: 33%;
+        line-height: 3rem;
+        text-align: center;
+        padding: 1rem;
+        vertical-align: top;
+
+        .build__icon {
+          display: inline-block;
+        }
 
         &__dz,
         &__xt {
           &--active {
-            background: $baseColor;
+            background: $highlightColor;
           }
         }
         &__nm {
